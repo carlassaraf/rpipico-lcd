@@ -50,6 +50,6 @@ void lcd_toggle_enable(uint8_t val);
 void lcd_send_byte(uint8_t val, int mode);
 void lcd_clear(void);
 void lcd_set_cursor(int line, int position);
-static void inline lcd_char(char val);
+void lcd_char(char val);
 void lcd_string(const char *s);
 void lcd_init(i2c_inst_t *i2c, uint8_t address);
