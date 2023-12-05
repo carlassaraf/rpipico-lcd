@@ -1,5 +1,5 @@
 {
-    "name": "LCD",
+    "name": "RPi Pico LCD",
     "version": "1.0.0",
     "description": "Biblioteca para usar un display un adaptador I2C en la Raspberry Pi Pico con el SDK.",
     "keywords": "rp2040, Raspberry Pi Pico, baremetal, I2C",
