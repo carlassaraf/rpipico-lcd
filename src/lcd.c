@@ -1,14 +1,22 @@
 #include "lcd.h"
 
+// Puntero a I2C usado
 static i2c_inst_t *i2c;
-
+// Direccion de 7 bits del I2C
 static uint8_t addr;
 
-/* Quick helper function for single byte transfers */
+/**
+ * @brief Manda un byte por I2C
+ * @param val es el byte a mandar
+*/
 void i2c_write_byte(uint8_t val) {
     i2c_write_blocking(i2c, addr, &val, 1, false);
 }
 
+/**
+ * @brief Conmuta el enable del LCD para mandar el comando
+ * @param val es el byte a enviar
+*/
 void lcd_toggle_enable(uint8_t val) {
     // Toggle enable pin on LCD display
     // We cannot do this too quickly or things don't work
@@ -20,7 +28,12 @@ void lcd_toggle_enable(uint8_t val) {
     sleep_us(DELAY_US);
 }
 
-// The display is sent a byte as two separate nibble transfers
+/**
+ * @brief Envia el byte por I2C en dos nibbles
+ * @param val es el byte a enviar
+ * @param mode LCD_COMMAND si es un comando o LCD_CHARACTER si
+ * es un caracter para escribir
+*/
 void lcd_send_byte(uint8_t val, int mode) {
     uint8_t high = mode | (val & 0xF0) | LCD_BACKLIGHT;
     uint8_t low = mode | ((val << 4) & 0xF0) | LCD_BACKLIGHT;
@@ -31,31 +44,52 @@ void lcd_send_byte(uint8_t val, int mode) {
     lcd_toggle_enable(low);
 }
 
+/**
+ * @brief Envia un comando de limpiar y resetear cursor
+*/
 void lcd_clear(void) {
     lcd_send_byte(LCD_CLEARDISPLAY, LCD_COMMAND);
 }
 
-// go to location on LCD
+/**
+ * @brief Pone al cursor del LCD en la posicion indicada
+ * @param line es el numero de linea (0 o 1)
+ * @param position es el numero de caracter (0 a 15)
+*/
 void lcd_set_cursor(int line, int position) {
     int val = (line == 0) ? 0x80 + position : 0xC0 + position;
     lcd_send_byte(val, LCD_COMMAND);
 }
 
-static void inline lcd_char(char val) {
+/**
+ * @brief Escribe un caracter en el display
+ * @param val es el caracter a enviar
+*/
+void lcd_char(char val) {
     lcd_send_byte(val, LCD_CHARACTER);
 }
 
+/**
+ * @brief Escribe una cadena de caracteres en el display
+ * @param s es la cadena a escribir
+*/
 void lcd_string(const char *s) {
     while (*s) {
         lcd_char(*s++);
     }
 }
 
+/**
+ * @brief Inicializa el display
+ * @param i2c puntero a I2C usado (i2c0 o i2c1)
+ * @param address es la direccion de 7 bits del adaptador I2C
+*/
 void lcd_init(i2c_inst_t *i2c, uint8_t address) {
+    // Guardo el I2C usado
     i2c = i2c;
-
+    // Guardo la direccion del display
     addr = address;
-
+    // Inicializo para que funcione con 4 bits de datos
     lcd_send_byte(0x03, LCD_COMMAND);
     lcd_send_byte(0x03, LCD_COMMAND);
     lcd_send_byte(0x03, LCD_COMMAND);
