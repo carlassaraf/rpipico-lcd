@@ -1,7 +1,7 @@
 #include "lcd.h"
 
 // Puntero a I2C usado
-static i2c_inst_t *i2c;
+static i2c_inst_t *lcd_i2c;
 // Direccion de 7 bits del I2C
 static uint8_t addr;
 
@@ -10,7 +10,7 @@ static uint8_t addr;
  * @param val es el byte a mandar
 */
 void i2c_write_byte(uint8_t val) {
-    i2c_write_blocking(i2c, addr, &val, 1, false);
+    i2c_write_blocking(lcd_i2c, addr, &val, 1, false);
 }
 
 /**
@@ -86,7 +86,7 @@ void lcd_string(const char *s) {
 */
 void lcd_init(i2c_inst_t *i2c, uint8_t address) {
     // Guardo el I2C usado
-    i2c = i2c;
+    lcd_i2c = i2c;
     // Guardo la direccion del display
     addr = address;
     // Inicializo para que funcione con 4 bits de datos
