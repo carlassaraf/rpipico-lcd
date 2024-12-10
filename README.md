@@ -6,6 +6,15 @@ Biblioteca para usar LCDs con la Raspberry Pi Pico. Puede ser usada descargandol
 lib_deps = https://github.com/carlassaraf/rpipico-lcd.git
 ```
 
+Si se elige usarla en un proyecto sin PlatformIO, incluir este repositorio en el proyecto y agregar en el `CMakeLists.txt1` del proyecto:
+
+```cmake
+# Añadir la subcarpeta donde está la biblioteca LCD
+add_subdirectory(rpipico-lcd)
+```
+
+Agregar esas lineas luego de la directiva `project`.
+
 ## Uso de la biblioteca
 
 Una vez incluida la biblioteca con `#include "lcd.h"` podemos hacer algo basico con el LCD usando:
